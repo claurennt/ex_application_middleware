@@ -3,12 +3,14 @@ const app = express();
 const port = 3000;
 
 const secure = (req, res, next) => {
-  const { token } = req.params;
-  if (!token || token.length <= 3) return res.status(400).send("Invalid token");
+  const { token } = req.query;
+  if (!token) return res.status(403).send("Forbidden. No token provided.");
   next();
 };
 
-app.get("/verify/:token", secure, (req, res) => res.send("Hello World!"));
+app.use(secure);
+
+app.get("/", (req, res) => res.send("Hello World!"));
 
 app.listen(port, () =>
   console.log(`Example app listening at http://localhost:${port}`)
